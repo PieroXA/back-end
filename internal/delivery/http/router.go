@@ -25,6 +25,7 @@ func NewRouter(
 	animalService *animalApp.Service,
 	healthService *healthApp.Service,
 	movementService *movementApp.Service,
+	userService *userApp.UserService,
 ) http.Handler {
 	r := chi.NewRouter()
 
@@ -46,6 +47,7 @@ func NewRouter(
 	animalHandler := handler.NewAnimalHandler(animalService)
 	healthHandler := handler.NewHealthHandler(healthService)
 	movementHandler := handler.NewMovementHandler(movementService)
+	userHandler := handler.NewUserHandler(userService)
 
 	// ── API v1 Routes ─────────────────────────────────────────────────────────
 	r.Route("/api/v1", func(r chi.Router) {
@@ -61,6 +63,15 @@ func NewRouter(
 		r.Group(func(r chi.Router) {
 			r.Use(middleware.Auth(jwtMaker))
 			r.Use(middleware.Tenant(pool))
+
+			// Users
+			r.Route("/users", func(r chi.Router) {
+				r.Get("/", userHandler.List)
+				r.Post("/", userHandler.Create)
+				r.Get("/{id}", userHandler.GetByID)
+				r.Put("/{id}", userHandler.Update)
+				r.Delete("/{id}", userHandler.Delete)
+			})
 
 			// Animals
 			r.Route("/farms/{farm_id}/animals", func(r chi.Router) {

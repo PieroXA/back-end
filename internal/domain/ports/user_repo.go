@@ -12,6 +12,9 @@ type UserRepository interface {
 	Create(ctx context.Context, u *domain.User) error
 	GetByEmail(ctx context.Context, email string) (*domain.User, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*domain.User, error)
+	List(ctx context.Context, tenantID uuid.UUID) ([]*domain.User, error)
+	Update(ctx context.Context, u *domain.User) error
+	Delete(ctx context.Context, id uuid.UUID, tenantID uuid.UUID) error
 }
 
 type TenantRepository interface {
