@@ -15,6 +15,7 @@ import (
 	authApp "mifinca-backend/internal/application/auth"
 	healthApp "mifinca-backend/internal/application/health"
 	movementApp "mifinca-backend/internal/application/movement"
+	userApp "mifinca-backend/internal/application/user"
 	httpDelivery "mifinca-backend/internal/delivery/http"
 	"mifinca-backend/internal/infrastructure/auth"
 	"mifinca-backend/internal/infrastructure/database"
@@ -57,9 +58,10 @@ func main() {
 	movementService := movementApp.NewService(movementRepo, hub)
 	healthService := healthApp.NewService(healthRepo, hub)
 	animalService := animalApp.NewService(animalRepo, farmRepo, movementRepo, hub)
+	userService := userApp.NewUserService(userRepo)
 
 	// ── HTTP Router ───────────────────────────────────────────────────────────
-	router := httpDelivery.NewRouter(pool, jwtMaker, authService, animalService, healthService, movementService)
+	router := httpDelivery.NewRouter(pool, jwtMaker, authService, animalService, healthService, movementService, userService)
 
 	// ── Server ────────────────────────────────────────────────────────────────
 	srv := &http.Server{

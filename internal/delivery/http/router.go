@@ -11,6 +11,7 @@ import (
 	authApp "mifinca-backend/internal/application/auth"
 	healthApp "mifinca-backend/internal/application/health"
 	movementApp "mifinca-backend/internal/application/movement"
+	userApp "mifinca-backend/internal/application/user"
 	"mifinca-backend/internal/delivery/http/handler"
 	"mifinca-backend/internal/delivery/http/httputil"
 	"mifinca-backend/internal/delivery/http/middleware"

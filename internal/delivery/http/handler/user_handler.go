@@ -40,13 +40,7 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tenantID, err := uuid.Parse(claims.TenantID)
-	if err != nil {
-		httputil.ErrorWithMessage(w, http.StatusBadRequest, "VALIDATION", "invalid tenant ID")
-		return
-	}
-
-	res, err := h.userService.Create(r.Context(), tenantID, req)
+	res, err := h.userService.Create(r.Context(), claims.TenantID, req)
 	if err != nil {
 		httputil.Error(w, err)
 		return
@@ -62,13 +56,7 @@ func (h *UserHandler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tenantID, err := uuid.Parse(claims.TenantID)
-	if err != nil {
-		httputil.ErrorWithMessage(w, http.StatusBadRequest, "VALIDATION", "invalid tenant ID")
-		return
-	}
-
-	res, err := h.userService.List(r.Context(), tenantID)
+	res, err := h.userService.List(r.Context(), claims.TenantID)
 	if err != nil {
 		httputil.Error(w, err)
 		return
@@ -84,12 +72,6 @@ func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tenantID, err := uuid.Parse(claims.TenantID)
-	if err != nil {
-		httputil.ErrorWithMessage(w, http.StatusBadRequest, "VALIDATION", "invalid tenant ID")
-		return
-	}
-
 	idParam := chi.URLParam(r, "id")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
@@ -97,7 +79,7 @@ func (h *UserHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := h.userService.GetByID(r.Context(), tenantID, id)
+	res, err := h.userService.GetByID(r.Context(), claims.TenantID, id)
 	if err != nil {
 		httputil.Error(w, err)
 		return
@@ -110,12 +92,6 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	claims := middleware.GetClaims(r.Context())
 	if claims == nil {
 		httputil.ErrorWithMessage(w, http.StatusUnauthorized, "UNAUTHORIZED", "missing claims")
-		return
-	}
-
-	tenantID, err := uuid.Parse(claims.TenantID)
-	if err != nil {
-		httputil.ErrorWithMessage(w, http.StatusBadRequest, "VALIDATION", "invalid tenant ID")
 		return
 	}
 
@@ -137,7 +113,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := h.userService.Update(r.Context(), tenantID, id, req)
+	res, err := h.userService.Update(r.Context(), claims.TenantID, id, req)
 	if err != nil {
 		httputil.Error(w, err)
 		return
@@ -153,12 +129,6 @@ func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tenantID, err := uuid.Parse(claims.TenantID)
-	if err != nil {
-		httputil.ErrorWithMessage(w, http.StatusBadRequest, "VALIDATION", "invalid tenant ID")
-		return
-	}
-
 	idParam := chi.URLParam(r, "id")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
@@ -166,7 +136,7 @@ func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.userService.Delete(r.Context(), tenantID, id); err != nil {
+	if err := h.userService.Delete(r.Context(), claims.TenantID, id); err != nil {
 		httputil.Error(w, err)
 		return
 	}

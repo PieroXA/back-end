@@ -34,7 +34,7 @@ func (s *UserService) Create(ctx context.Context, tenantID uuid.UUID, req Create
 		Email:        req.Email,
 		PasswordHash: string(hash),
 		FullName:     req.FullName,
-		Role:         req.Role,
+		Role:         domain.Role(req.Role),
 		IsActive:     true,
 		CreatedAt:    time.Now(),
 	}
@@ -82,7 +82,7 @@ func (s *UserService) Update(ctx context.Context, tenantID uuid.UUID, id uuid.UU
 
 	u.Email = req.Email
 	u.FullName = req.FullName
-	u.Role = req.Role
+	u.Role = domain.Role(req.Role)
 	u.IsActive = *req.IsActive
 
 	if req.Password != nil && *req.Password != "" {
@@ -117,7 +117,7 @@ func toUserResponse(u *domain.User) UserResponse {
 		ID:        u.ID,
 		Email:     u.Email,
 		FullName:  u.FullName,
-		Role:      u.Role,
+		Role:      string(u.Role),
 		IsActive:  u.IsActive,
 		CreatedAt: u.CreatedAt,
 	}
